@@ -8,22 +8,19 @@ import BottomTabs from './navigation/BottomTabs';
 import NewsDetailScreen from './screens/NewsDetailScreen';
 import NewsListScreen from './screens/NewsListScreen';
 import AppHeader from './components/AppHeader';
-import LoadingScreen from './screens/LoadingScreen'; 
-import EditProfileScreen from './screens/EditProfileScreen';
+import LoadingScreen from './screens/LoadingScreen';
+import LoginScreen from './screens/LoginScreen';
 import AboutScreen from './screens/About';
-
-
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
-  // Load font Chomsky
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        'Crimson':require('./assets/fonts/CrimsonRegular.ttf'),
+        'Crimson': require('./assets/fonts/CrimsonRegular.ttf'),
         'Chomsky': require('./assets/fonts/Chomsky.ttf'),
         'FuturaHeavy': require('./assets/fonts/FuturaHeavy.ttf'),
         'FuturaBold': require('./assets/fonts/FuturaBold.ttf'),
@@ -41,16 +38,37 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          header: () => <AppHeader />, // Menggunakan header custom di setiap layar
-        }}
-      >
-         <Stack.Screen name="Loading" component={LoadingScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="HomeTabs" component={BottomTabs} />
-        <Stack.Screen name="NewsList" component={NewsListScreen} />
-        <Stack.Screen name="About" component={AboutScreen} options={{ title: 'About' }} />
-        <Stack.Screen name="NewsDetail" component={NewsDetailScreen} options={{ title: 'Detail Berita' }} />
+      <Stack.Navigator>
+        <Stack.Screen 
+          name="Login" 
+          component={LoginScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="Loading" 
+          component={LoadingScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="HomeTabs" 
+          component={BottomTabs} 
+          options={{ header: () => <AppHeader /> }}
+        />
+        <Stack.Screen 
+          name="NewsList" 
+          component={NewsListScreen} 
+          options={{ header: () => <AppHeader /> }}
+        />
+        <Stack.Screen 
+          name="NewsDetail" 
+          component={NewsDetailScreen} 
+          options={{ header: () => <AppHeader /> }}
+        />
+        <Stack.Screen 
+          name="About" 
+          component={AboutScreen} 
+          options={{ header: () => <AppHeader /> }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
