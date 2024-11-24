@@ -10,7 +10,8 @@ import NewsListScreen from './screens/NewsListScreen';
 import AppHeader from './components/AppHeader';
 import LoadingScreen from './screens/LoadingScreen';
 import LoginScreen from './screens/LoginScreen';
-import AboutScreen from './screens/About';
+import ProfileScreen from './screens/ProfileScreen';
+import RegisterScreen from './screens/RegisterScreen';
 
 const Stack = createStackNavigator();
 
@@ -65,9 +66,13 @@ const App = () => {
           options={{ header: () => <AppHeader /> }}
         />
         <Stack.Screen 
-          name="About" 
-          component={AboutScreen} 
+          name="Profile" 
+          component={ProfileScreen} 
           options={{ header: () => <AppHeader /> }}
+        />
+        <Stack.Screen 
+          name="Register" 
+          component={RegisterScreen} 
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import HomeScreen from '../screens/HomeScreen';
-import About from '../screens/About';
+import ProfileScreen from '../screens/ProfileScreen';
 import CategoryStack from './CategoryStack';  // Import CategoryStack
 
 const Tab = createBottomTabNavigator();
@@ -18,7 +18,7 @@ const BottomTabs = () => {
             iconName = 'home';
           } else if (route.name === 'Categories') {
             iconName = 'category';
-          } else if (route.name === 'About') {
+          } else if (route.name === 'Profile') {
             iconName = 'person';
           }
           return <MaterialIcons name={iconName} size={size} color={color} />;
@@ -45,11 +45,11 @@ const BottomTabs = () => {
         headerShown : false,
         title: 'Category' }} />
       <Tab.Screen 
-      name="About" 
-      component={About} 
+      name="Profile" 
+      component={ProfileScreen} 
       options={{ 
         headerShown : false,
-        title: 'About' }} />
+        title: 'Profile' }} />
     </Tab.Navigator>
   );
 };

@@ -12,37 +12,60 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LoginScreen = ({ navigation }) => {
+const RegisterScreen = ({ navigation }) => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = async () => {
-    try {
-      // Periksa apakah data registrasi sudah ada di AsyncStorage
-      const registeredUser = await AsyncStorage.getItem('user');
-      if (!registeredUser) {
-        Alert.alert('Error', 'No account found. Please register first.');
-        navigation.navigate('Register');
-        return;
-      }
-
-      const userData = JSON.parse(registeredUser);
-
-      // Validasi email dan password
-      if (email === userData.email && password === userData.password) {
-        setError('');
-        // Set status login
-        await AsyncStorage.setItem('isLoggedIn', 'true');
-        await AsyncStorage.setItem('currentUser', JSON.stringify(userData));
-        navigation.replace('Loading');
-      } else {
-        setError('Invalid email or password');
-      }
-    } catch (error) {
-      setError('Error logging in. Please try again.');
+  const handleRegister = async () => {
+    if (!username || !email || !password) {
+      setError('Please fill in all fields');
+      return;
     }
-  }
+
+    // Validasi email sederhana
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    // Validasi username minimal 3 karakter
+    if (username.length < 3) {
+      setError('Username must be at least 3 characters long');
+      return;
+    }
+
+    // Validasi password minimal 6 karakter
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    try {
+      const userData = {
+        username,
+        email,
+        password,
+        joinDate: new Date().toISOString(),
+        bio: `Hi, I'm ${username}!`,
+        stats: {
+          savedArticles: 0,
+          comments: 0,
+          likes: 0
+        }
+      };
+
+      // Simpan data pengguna ke AsyncStorage
+      await AsyncStorage.setItem('user', JSON.stringify(userData));
+      Alert.alert('Success', 'Account created successfully!');
+      navigation.navigate('Login');
+    } catch (error) {
+      setError('Error creating account. Please try again.');
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -51,10 +74,19 @@ const LoginScreen = ({ navigation }) => {
       >
         <View style={styles.headerContainer}>
           <Text style={styles.title}>TimesLetter</Text>
-          <Text style={styles.subtitle}>Your Daily News Companion</Text>
+          <Text style={styles.subtitle}>Create your TimesLetter account</Text>
         </View>
 
         <View style={styles.formContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            placeholderTextColor="#666"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+          />
+
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -76,20 +108,18 @@ const LoginScreen = ({ navigation }) => {
 
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-          <TouchableOpacity 
-            style={styles.loginButton}
-            onPress={handleLogin}
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={handleRegister}
           >
-            <Text style={styles.loginButtonText}>Login</Text>
+            <Text style={styles.registerButtonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          <View style={styles.signupContainer}>
-            <Text style={styles.signupText}>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')} // Navigasi ke halaman Register
-            >
-              <Text style={styles.signupButtonText}>Sign Up</Text>
+          <View style={styles.loginRedirectContainer}>
+            <Text style={styles.loginRedirectText}>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.loginRedirectButtonText}>Login</Text>
             </TouchableOpacity>
-
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -143,44 +173,34 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
   },
-  loginButton: {
+  registerButton: {
     backgroundColor: '#2B2E4A',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
     marginVertical: 10,
   },
-  loginButtonText: {
+  registerButtonText: {
     fontFamily: 'FuturaBold',
     color: '#f1c40f',
     fontSize: 18,
   },
-  forgotButton: {
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  forgotButtonText: {
-    fontFamily: 'Merriweather',
-    color: '#2B2E4A',
-    fontSize: 14,
-  },
-  signupContainer: {
+  loginRedirectContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
   },
-  signupText: {
+  loginRedirectText: {
     fontFamily: 'Merriweather',
     color: '#666',
     fontSize: 14,
   },
-  signupButtonText: {
+  loginRedirectButtonText: {
     fontFamily: 'MerriweatherBold',
     color: '#2B2E4A',
     fontSize: 14,
   },
 });
 
-export default LoginScreen;
-
+export default RegisterScreen;

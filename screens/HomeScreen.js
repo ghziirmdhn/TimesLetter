@@ -7,6 +7,7 @@ import HotNewsCard from '../components/HotNewsCard';
 import CategoryList from '../components/CategoryList';
 import SearchBar from '../components/SearchBar';
 
+
 const API_KEY = '5adaee36e05045a78355f31cf2391c74';
 
 const HomeScreen = ({ navigation }) => {
