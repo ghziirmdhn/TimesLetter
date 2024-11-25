@@ -71,9 +71,9 @@ const ProfileScreen = () => {
   };
 
   const menuItems = [
-    { icon: 'notifications-outline', label: 'Notifikasi' },
-    { icon: 'settings-outline', label: 'Pengaturan' },
-    { icon: 'help-circle-outline', label: 'Bantuan' },
+    { icon: 'notifications-outline', label: 'Notification' },
+    { icon: 'settings-outline', label: 'Setting' },
+    { icon: 'help-circle-outline', label: 'Help' },
   ];
 
   return (
