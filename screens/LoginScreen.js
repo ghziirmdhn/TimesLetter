@@ -18,31 +18,30 @@ const LoginScreen = ({ navigation }) => {
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
-    try {
-      // Periksa apakah data registrasi sudah ada di AsyncStorage
-      const registeredUser = await AsyncStorage.getItem('user');
-      if (!registeredUser) {
-        Alert.alert('Error', 'No account found. Please register first.');
-        navigation.navigate('Register');
-        return;
-      }
-
-      const userData = JSON.parse(registeredUser);
-
-      // Validasi email dan password
-      if (email === userData.email && password === userData.password) {
-        setError('');
-        // Set status login
-        await AsyncStorage.setItem('isLoggedIn', 'true');
-        await AsyncStorage.setItem('currentUser', JSON.stringify(userData));
-        navigation.replace('Loading');
-      } else {
-        setError('Invalid email or password');
-      }
-    } catch (error) {
-      setError('Error logging in. Please try again.');
+  try {
+    const registeredUser = await AsyncStorage.getItem('user');
+    if (!registeredUser) {
+      Alert.alert('Error', 'No account found. Please register first.');
+      navigation.navigate('Register');
+      return;
     }
+
+    const userData = JSON.parse(registeredUser);
+
+    if (email === userData.email && password === userData.password) {
+      setError('');
+      // Simpan status login dan data pengguna
+      await AsyncStorage.setItem('isLoggedIn', 'true');
+      await AsyncStorage.setItem('currentUser', JSON.stringify(userData));
+      navigation.replace('Loading');
+    } else {
+      setError('Invalid email or password');
+    }
+  } catch (error) {
+    setError('Error logging in. Please try again.');
   }
+};
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView

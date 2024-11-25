@@ -12,6 +12,7 @@ import LoadingScreen from './screens/LoadingScreen';
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import EditProfileScreen from './screens/EditProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -72,8 +73,12 @@ const App = () => {
         />
         <Stack.Screen 
           name="Register" 
-          component={RegisterScreen} 
+          component={RegisterScreen}
+          options={{ headerShown: false }}  
         />
+         <Stack.Screen 
+         name="EditProfile" 
+         component={EditProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

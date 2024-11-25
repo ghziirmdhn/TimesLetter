@@ -1,28 +1,39 @@
-// screens/Profile.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
-  
-  // Data profil (nanti bisa diambil dari state/API)
-  const profileData = {
-    name: 'John Doe',
-    email: 'john.doe@email.com',
-    bio: 'Passionate news reader and technology enthusiast',
-    location: 'Jakarta, Indonesia',
+  const [profileData, setProfileData] = useState({
+    username: '',
+    email: '',
+    bio: '',
+    joinDate: '',
+    stats: {
+      savedArticles: 0,
+      comments: 0,
+      likes: 0
+    }
+  });
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      const userDataString = await AsyncStorage.getItem('currentUser');
+      if (userDataString) {
+        const userData = JSON.parse(userDataString);
+        setProfileData(userData);
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
   };
-
-
-  const menuItems = [
-    { icon: 'notifications-outline', label: 'Notifikasi' },
-    { icon: 'settings-outline', label: 'Pengaturan' },
-    { icon: 'help-circle-outline', label: 'Bantuan' },
-  ];
-
-  // Fungsi untuk handle logout
+  
   const handleLogout = () => {
     Alert.alert(
       "Konfirmasi Logout",
@@ -34,14 +45,36 @@ const ProfileScreen = () => {
         },
         {
           text: "Ya, Keluar",
-          onPress: () => {
-            // Di sini Anda bisa menambahkan logika logout seperti menghapus token, dll
-            navigation.navigate('Login'); // Menggunakan replace agar user tidak bisa kembali ke profile screen
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('isLoggedIn'); // Hapus status login
+              console.log('Logged out successfully');
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }], // Reset ke layar Login
+              });
+            } catch (error) {
+              console.error('Error during logout:', error);
+            }
           }
         }
       ]
     );
   };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `Joined ${date.toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric'
+    })}`;
+  };
+
+  const menuItems = [
+    { icon: 'notifications-outline', label: 'Notifikasi' },
+    { icon: 'settings-outline', label: 'Pengaturan' },
+    { icon: 'help-circle-outline', label: 'Bantuan' },
+  ];
 
   return (
     <View style={styles.mainContainer}>
@@ -58,14 +91,15 @@ const ProfileScreen = () => {
             </TouchableOpacity>
           </View>
           
-          <Text style={styles.name}>{profileData.name}</Text>
+          <Text style={styles.name}>{profileData.username}</Text>
           <Text style={styles.email}>{profileData.email}</Text>
           <Text style={styles.bio}>{profileData.bio}</Text>
-          <Text style={styles.joinDate}>{profileData.joinDate}</Text>
+          <Text style={styles.joinDate}>{formatDate(profileData.joinDate)}</Text>
           
-          <TouchableOpacity style={styles.editProfileButton}>
-            <Text style={styles.editProfileText}>Edit Profile</Text>
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.editProfileButton} onPress={() => navigation.navigate('EditProfile')}>
+          <Text style={styles.editProfileText}>Edit Profile</Text>
+        </TouchableOpacity>
+
         </View>
 
         {/* Menu Items */}

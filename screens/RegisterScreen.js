@@ -125,7 +125,7 @@ const RegisterScreen = ({ navigation }) => {
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
